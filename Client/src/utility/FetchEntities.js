@@ -1,18 +1,21 @@
 const token = localStorage.getItem("jwtToken");
 
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 export const GetAllEntitesBySessionId = async (id) => {
     const response = await fetch(
-        `/Entites/GetAllEntitesBySessionId?sessionId=${id}`,
+        `${baseUrl}/Entites/GetAllEntitesBySessionId?sessionId=${id}`,
         {
             method: "GET",
-            ...(token && { Authorization: `Bearer ${token}` }),
+            headers: {
+                ...(token && { Authorization: `Bearer ${token}` }),
+            },
         }
     );
     const data = await response.json();
     return data;
 };
 export const createEntity = async (formValues) => {
-    const response = await fetch("/Entites/CreateEntity", {
+    const response = await fetch(`${baseUrl}/Entites/CreateEntity`, {
         method: "POST",
         headers: {
             Accept: "application/json",
@@ -34,7 +37,7 @@ export const createEntity = async (formValues) => {
 };
 
 export const deleteEntity = async (id) => {
-    const response = await fetch(`/Entites/DeleteEntity/${id}`, {
+    const response = await fetch(`${baseUrl}/Entites/DeleteEntity/${id}`, {
         method: "DELETE",
         headers: {
             Accept: "application/json",
@@ -51,7 +54,7 @@ export const deleteEntity = async (id) => {
 };
 
 export const editEntity = async (newObj) => {
-    const response = await fetch("/Entites/EditEntity", {
+    const response = await fetch(`${baseUrl}/Entites/EditEntity`, {
         method: "PATCH",
         headers: {
             Accept: "application/json",

@@ -155,3 +155,7 @@ appsettings.Local.json
 # .azure-pipelines.yml
 # Uncomment below if using GitLab CI/CD
 # .gitlab-ci.yml
+Client/.env.production
+Client/.env.development
+Client/*.tar
+KPMG_API/*.tar
