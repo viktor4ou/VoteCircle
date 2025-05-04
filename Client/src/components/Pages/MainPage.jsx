@@ -13,13 +13,13 @@ const MainPage = () => {
     }, []);
 
     return (
-        <div className="flex flex-col mx-70">
+        <div className="flex flex-col mx-5 sm:mx-10 md:mx-30 lg:mx-40 xl">
             <div className="flex my-5 mx-10 xl:mx-80 sm:mx-20 justify-between drop-shadow-xl ">
                 <CreateSession getSessions={getSessions}>
                     Create Session
                 </CreateSession>
             </div>
-            <div className="mt-3">
+            <div className="mt-3 ">
                 {sessions.map((s) => (
                     <Session {...s} key={s.id} getSessions={getSessions} />
                 ))}
