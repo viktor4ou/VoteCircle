@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KPMG_API", "KPMG_API\KPMG_API.csproj", "{DA9404E0-43E4-4083-83BF-87F24FD8340F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.Models", "API.Models\API.Models.csproj", "{F83EFC94-DF25-4FFE-8483-788F6530ADF5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.Data", "API.Data\API.Data.csproj", "{B3727922-A16A-40E1-BFAD-25C85C868895}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DA9404E0-43E4-4083-83BF-87F24FD8340F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA9404E0-43E4-4083-83BF-87F24FD8340F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA9404E0-43E4-4083-83BF-87F24FD8340F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA9404E0-43E4-4083-83BF-87F24FD8340F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F83EFC94-DF25-4FFE-8483-788F6530ADF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F83EFC94-DF25-4FFE-8483-788F6530ADF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F83EFC94-DF25-4FFE-8483-788F6530ADF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F83EFC94-DF25-4FFE-8483-788F6530ADF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3727922-A16A-40E1-BFAD-25C85C868895}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3727922-A16A-40E1-BFAD-25C85C868895}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3727922-A16A-40E1-BFAD-25C85C868895}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3727922-A16A-40E1-BFAD-25C85C868895}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
