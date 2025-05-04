@@ -22,4 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-.tar
+*.tar
+*.conf
+Client/nginx.conf
+KPMG_API/KPMG_API/appsettings.json
+
