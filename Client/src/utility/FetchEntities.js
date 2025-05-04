@@ -2,7 +2,7 @@ const token = localStorage.getItem("jwtToken");
 
 export const GetAllEntitesBySessionId = async (id) => {
     const response = await fetch(
-        `http://localhost:5196/Entites/GetAllEntitesBySessionId?sessionId=${id}`,
+        `/Entites/GetAllEntitesBySessionId?sessionId=${id}`,
         {
             method: "GET",
             ...(token && { Authorization: `Bearer ${token}` }),
@@ -12,7 +12,7 @@ export const GetAllEntitesBySessionId = async (id) => {
     return data;
 };
 export const createEntity = async (formValues) => {
-    const response = await fetch("http://localhost:5196/Entites/CreateEntity", {
+    const response = await fetch("/Entites/CreateEntity", {
         method: "POST",
         headers: {
             Accept: "application/json",
@@ -34,17 +34,14 @@ export const createEntity = async (formValues) => {
 };
 
 export const deleteEntity = async (id) => {
-    const response = await fetch(
-        `http://localhost:5196/Entites/DeleteEntity/${id}`,
-        {
-            method: "DELETE",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                ...(token && { Authorization: `Bearer ${token}` }),
-            },
-        }
-    );
+    const response = await fetch(`/Entites/DeleteEntity/${id}`, {
+        method: "DELETE",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` }),
+        },
+    });
     const data = await response.json();
 
     data.ok = response.ok;
@@ -54,7 +51,7 @@ export const deleteEntity = async (id) => {
 };
 
 export const editEntity = async (newObj) => {
-    const response = await fetch("http://localhost:5196/Entites/EditEntity", {
+    const response = await fetch("/Entites/EditEntity", {
         method: "PATCH",
         headers: {
             Accept: "application/json",

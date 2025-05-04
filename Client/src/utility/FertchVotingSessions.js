@@ -1,9 +1,7 @@
 const token = localStorage.getItem("jwtToken");
 
 export const getAllSessions = async () => {
-    const response = await fetch(
-        "http://localhost:5196/VotingSessions/GetAllSessions"
-    );
+    const response = await fetch("/VotingSessions/GetAllSessions");
     const data = await response.json();
 
     return data;
@@ -12,22 +10,19 @@ export const getAllSessions = async () => {
 export const createVotingSession = async (obj) => {
     console.log(token);
 
-    const response = await fetch(
-        "http://localhost:5196/VotingSessions/CreateVotingSession",
-        {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                ...(token && { Authorization: `Bearer ${token}` }),
-            },
-            body: JSON.stringify({
-                title: obj.title,
-                description: obj.description,
-                scheduledUntil: obj.scheduledUntil,
-            }),
-        }
-    );
+    const response = await fetch("/VotingSessions/CreateVotingSession", {
+        method: "POST",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        body: JSON.stringify({
+            title: obj.title,
+            description: obj.description,
+            scheduledUntil: obj.scheduledUntil,
+        }),
+    });
 
     const data = await response.json();
     data.ok = response.ok;
@@ -37,17 +32,14 @@ export const createVotingSession = async (obj) => {
 };
 
 export const deleteVotingSession = async (id) => {
-    const response = await fetch(
-        `http://localhost:5196/VotingSessions/DeleteVotingSession/${id}`,
-        {
-            method: "DELETE",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                ...(token && { Authorization: `Bearer ${token}` }),
-            },
-        }
-    );
+    const response = await fetch(`/VotingSessions/DeleteVotingSession/${id}`, {
+        method: "DELETE",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` }),
+        },
+    });
 
     const data = await response.json();
 

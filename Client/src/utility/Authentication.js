@@ -1,19 +1,16 @@
 export const login = async (obj) => {
-    const response = await fetch(
-        "http://localhost:5196/Authentication/SignIn",
-        {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email: obj.email,
-                password: obj.password,
-            }),
-        }
-    );
+    const response = await fetch("/Authentication/SignIn", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            email: obj.email,
+            password: obj.password,
+        }),
+    });
 
     const responseData = await response.json();
     console.log(responseData.token);
@@ -25,7 +22,7 @@ export const login = async (obj) => {
 };
 
 export const register = async (obj) => {
-    const response = await fetch("http://localhost:5196/Identity/register", {
+    const response = await fetch("/Identity/register", {
         method: "POST",
         headers: {
             Accept: "application/json",
@@ -42,7 +39,7 @@ export const register = async (obj) => {
 };
 
 export const logout = async () => {
-    await fetch("http://localhost:5196/Logout", {
+    await fetch("/Logout", {
         method: "POST",
         headers: {
             Accept: "application/json",
