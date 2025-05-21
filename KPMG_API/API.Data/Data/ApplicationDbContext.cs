@@ -1,11 +1,6 @@
 ﻿using API.Models.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace API.Data.Data
 {
@@ -18,10 +13,15 @@ namespace API.Data.Data
 
         public DbSet<Entity> Entities { get; set; }
         public DbSet<VotingSession> VotingSessions { get; set; }
-
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<RefreshToken>()
+               .HasOne(rt => rt.User)
+               .WithMany(u => u.RefreshTokens)
+               .HasForeignKey(rt => rt.UserId);
 
             modelBuilder.Entity<VotingSession>()
                 .HasMany(e => e.Entities)
@@ -46,7 +46,7 @@ namespace API.Data.Data
             // Seed VotingSession
             modelBuilder.Entity<VotingSession>()
                 .HasData(
-                    new VotingSession(1,"New water pipe", "We need to change the water pipe", staticDate , staticDate)
+                    new VotingSession(1, "New water pipe", "We need to change the water pipe", staticDate, staticDate)
                 );
         }
 
