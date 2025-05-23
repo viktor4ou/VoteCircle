@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -17,8 +17,9 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { login, register } from "@/utility/Authentication";
-export const AuthenticationButtons = ({ setIsAuthenticated }) => {
+import AuthContext from "@/auth/AuthContext";
+export const AuthenticationButtons = () => {
+    const { login, user, logout, register } = useContext(AuthContext);
     const [option, setOption] = useState("sign in");
     const [open, setOpen] = useState(false);
     const [email, setEmail] = useState("");
@@ -32,9 +33,7 @@ export const AuthenticationButtons = ({ setIsAuthenticated }) => {
 
     async function signInOnSubmit(e) {
         e.preventDefault();
-        const obj = { email, password };
-        const response = await login(obj); //add error handling
-        setIsAuthenticated(response);
+        const response = await login(email, password); //add error handling
         setOpen(false);
         clearFormData();
     }
@@ -42,12 +41,8 @@ export const AuthenticationButtons = ({ setIsAuthenticated }) => {
     async function signUpOnSubmit(e) {
         e.preventDefault();
 
-        const obj = { email, password };
+        const response = await register(email, password); //add error handling
 
-        const registerResponse = await register(obj);
-        const loginResponse = await login(obj); //add error handling
-
-        setIsAuthenticated(loginResponse);
         setOpen(false);
         clearFormData();
     }
@@ -80,22 +75,36 @@ export const AuthenticationButtons = ({ setIsAuthenticated }) => {
         setEmail("");
         setPassword("");
     }
+
     //add on switch between modes to clear the form states
     return (
         <>
             <div className="flex gap-4">
-                <Button
-                    onClick={() => handleOpen("sign in")}
-                    className="bg-[#4199FF] drop-shadow-xl mx-2 hover:bg-[#357dd0]"
-                >
-                    Sign in
-                </Button>
-                <Button
-                    onClick={() => handleOpen("sign up")}
-                    className="bg-[#4199FF] drop-shadow-xl me-5 hover:bg-[#357dd0]"
-                >
-                    Sign up
-                </Button>
+                {!user ? (
+                    <>
+                        <Button
+                            onClick={() => handleOpen("sign in")}
+                            className="bg-[#4199FF] drop-shadow-xl mx-2 hover:bg-[#357dd0]"
+                        >
+                            Sign in
+                        </Button>
+                        <Button
+                            onClick={() => handleOpen("sign up")}
+                            className="bg-[#4199FF] drop-shadow-xl me-5 hover:bg-[#357dd0]"
+                        >
+                            Sign up
+                        </Button>
+                    </>
+                ) : (
+                    <div>
+                        <Button
+                            onClick={() => logout()}
+                            className="bg-[#4199FF] drop-shadow-xl me-5 hover:bg-[#357dd0]"
+                        >
+                            Logout
+                        </Button>
+                    </div>
+                )}
             </div>
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogContent className="sm:max-w-[425px]">

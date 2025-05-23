@@ -22,7 +22,7 @@ import { Progress } from "./ui/progress";
 import { Link } from "react-router";
 import { useCountdown } from "@/CustomHooks/useCoutdown";
 import { Trash } from "lucide-react";
-import { deleteVotingSession } from "@/utility/FertchVotingSessions";
+import { deleteVotingSession } from "@/utility/FetchVotingSessions";
 import { toast } from "sonner";
 export const Session = ({
     id,

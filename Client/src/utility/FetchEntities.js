@@ -1,74 +1,81 @@
-const token = localStorage.getItem("jwtToken");
-
+import api from "./axios";
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
-export const GetAllEntitesBySessionId = async (id) => {
-    const response = await fetch(
-        `${baseUrl}/Entites/GetAllEntitesBySessionId?sessionId=${id}`,
+
+// helper to read token on each call
+function getAuthHeader() {
+    const token = localStorage.getItem("token");
+    return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+export const getAllEntitesBySessionId = async (id) => {
+    const response = await api.get(
+        `${baseUrl}/Entites/GetAllEntitesBySessionId`,
         {
-            method: "GET",
+            params: { sessionId: id },
             headers: {
-                ...(token && { Authorization: `Bearer ${token}` }),
+                ...getAuthHeader(),
             },
         }
     );
-    const data = await response.json();
-    return data;
+    return response.data;
 };
+
 export const createEntity = async (formValues) => {
-    const response = await fetch(`${baseUrl}/Entites/CreateEntity`, {
-        method: "POST",
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            ...(token && { Authorization: `Bearer ${token}` }),
-        },
-        body: JSON.stringify({
+    const response = await api.post(
+        `${baseUrl}/Entites/CreateEntity`,
+        {
             title: formValues.title,
             percentageWeight: formValues.percentageWeight,
             sessionId: formValues.sessionId,
-        }),
-    });
+        },
+        {
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                ...getAuthHeader(),
+            },
+        }
+    );
 
-    const data = await response.json();
-    data.ok = response.ok;
+    const data = response.data;
+    data.ok = response.status >= 200 && response.status < 300;
     data.status = response.status;
-
     return data;
 };
 
 export const deleteEntity = async (id) => {
-    const response = await fetch(`${baseUrl}/Entites/DeleteEntity/${id}`, {
-        method: "DELETE",
+    const response = await api.delete(`${baseUrl}/Entites/DeleteEntity/${id}`, {
         headers: {
             Accept: "application/json",
-            "Content-Type": "application/json",
-            ...(token && { Authorization: `Bearer ${token}` }),
+            ...getAuthHeader(),
         },
     });
-    const data = await response.json();
 
-    data.ok = response.ok;
+    const data = response.data;
+    data.ok = response.status >= 200 && response.status < 300;
     data.status = response.status;
-
     return data;
 };
 
 export const editEntity = async (newObj) => {
-    const response = await fetch(`${baseUrl}/Entites/EditEntity`, {
-        method: "PATCH",
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            ...(token && { Authorization: `Bearer ${token}` }),
-        },
-        body: JSON.stringify({
+    const response = await api.patch(
+        `${baseUrl}/Entites/EditEntity`,
+        {
             id: newObj.id,
             title: newObj.title,
             percentageWeight: newObj.percentageWeight,
-        }),
-    });
-    const data = await response.json();
-    data.ok = response.ok;
+        },
+        {
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                ...getAuthHeader(),
+            },
+        }
+    );
+
+    const data = response.data;
+    data.ok = response.status >= 200 && response.status < 300;
     data.status = response.status;
     return data;
 };

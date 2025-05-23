@@ -17,7 +17,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { createVotingSession } from "@/utility/FertchVotingSessions";
+import { createVotingSession } from "@/utility/FetchVotingSessions";
 import { toast } from "sonner";
 const CreateSession = ({ getSessions }) => {
     const [open, setOpen] = useState(false); // State to control modal open/close

@@ -2,14 +2,14 @@ import Entity from "./Entity";
 import { useEffect, useState } from "react";
 import { VoteProgress } from "@/components/ui/VoteProgress";
 import CreateEntity from "./CreateEntity";
-import { GetAllEntitesBySessionId } from "./../utility/FetchEntities";
+import { getAllEntitesBySessionId } from "./../utility/FetchEntities";
 import { useParams } from "react-router";
 const ActivePoll = () => {
     const [entities, setEntities] = useState([]);
     const [voteResult, setVoteResult] = useState(0.0);
     const { id } = useParams();
     async function fetchData() {
-        setEntities(await GetAllEntitesBySessionId(id));
+        setEntities(await getAllEntitesBySessionId(id));
     }
 
     useEffect(() => {

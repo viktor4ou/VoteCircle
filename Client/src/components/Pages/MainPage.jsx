@@ -1,5 +1,5 @@
 import CreateSession from "../CreateSession";
-import { getAllSessions } from "@/utility/FertchVotingSessions";
+import { getAllSessions } from "@/utility/FetchVotingSessions";
 import { useEffect, useState } from "react";
 import { Session } from "../Session";
 
