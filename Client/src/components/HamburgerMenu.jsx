@@ -8,9 +8,8 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
-import CreateEntity from "./CreateEntity";
 import { Button } from "./ui/button";
-import { ThemeSwitch } from "./ui/ThemeSwitch";
+import { AuthenticationButtons } from "./AuthenticationButtons";
 export const HamburgerMenu = () => {
     const [themeSwitchStatus, setThemeSwitchStatus] = useState(false);
     const [sheetOpen, setSheetOpen] = useState(false);
@@ -28,16 +27,8 @@ export const HamburgerMenu = () => {
                     </p>
                 </SheetTitle>
 
-                <div className="flex flex-col drop-shadow-xl mx-5 ">
-                    <Button className="bg-[#4199FF] drop-shadow-xl mb-3 hover:bg-[#357dd0]">
-                        Sign in
-                    </Button>
-                    <Button className="bg-[#4199FF] drop-shadow-xl  hover:bg-[#357dd0]">
-                        Sign up
-                    </Button>
-                    <div className="mt-7 sm:hidden">
-                        <CreateEntity />
-                    </div>
+                <div className="flex drop-shadow-xl justify-center ml-6">
+                    <AuthenticationButtons />
                 </div>
                 <SheetDescription></SheetDescription>
                 <SheetFooter>
