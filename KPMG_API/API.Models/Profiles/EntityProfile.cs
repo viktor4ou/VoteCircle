@@ -1,6 +1,6 @@
-﻿using AutoMapper;
-using API.Models.DTOs.Enitity;
+﻿using API.Models.DTOs.Enitity;
 using API.Models.Models;
+using AutoMapper;
 
 namespace API.Models.Profiles
 {
@@ -14,7 +14,7 @@ namespace API.Models.Profiles
                 .ForMember(dest => dest.PercentageWeight, src => src.MapFrom(e => e.PercentageWeight));
 
             CreateMap<EditEntityDTO, Entity>()
-                .ForMember(dest => dest.Id, src => src.MapFrom(e => e.Id))
+                //.ForMember(dest => dest.Id, src => src.MapFrom(e => e.Id))
                 .ForMember(dest => dest.PercentageWeight, src => src.MapFrom(e => e.PercentageWeight))
                 .ForMember(dest => dest.Title, src => src.MapFrom(e => e.Title));
 

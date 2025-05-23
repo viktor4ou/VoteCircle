@@ -112,9 +112,8 @@ namespace KPMG_API.Controllers
                 return BadRequest(problemDetails);
 
             }
-            Entity entitiy = mapper.Map<Entity>(editDTO);
-
-            entityRepository.Update(entity);
+            Entity newEntity = mapper.Map(editDTO, entity);
+            entityRepository.Update(newEntity);
             await entityRepository.SaveChangesAsync();
             Log.Information("Successfully updated entity {@entity}", entity);
             return Ok(new { message = "Entity was updated successfully!" });

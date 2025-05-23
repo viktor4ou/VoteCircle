@@ -1,9 +1,8 @@
-﻿using API.Data.Data;
+﻿using API.Data.Interfaces;
 using API.Models.DTOs.Authentication;
 using API.Models.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -16,37 +15,36 @@ namespace KPMG_API.Controllers
     [Route("[controller]")]
     public class AuthenticationController : ControllerBase
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IConfiguration _config;
-        private readonly ApplicationDbContext _context;
+        private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly IConfiguration config;
+        private readonly IUserRepository userRepository;
 
         public AuthenticationController(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             IConfiguration config,
-            ApplicationDbContext context)
+            IUserRepository userRepository)
         {
-            _signInManager = signInManager;
-            _userManager = userManager;
-            _config = config;
-            _context = context;
+            this.signInManager = signInManager;
+            this.userManager = userManager;
+            this.config = config;
+            this.userRepository = userRepository;
         }
 
         [HttpPost("SignIn")]
         public async Task<IActionResult> SignIn([FromBody] SignInDTO dto)
         {
-            var user = await _userManager.FindByEmailAsync(dto.Email);
-            if (user == null || !(await _userManager.CheckPasswordAsync(user, dto.Password)))
+            var user = await userManager.FindByEmailAsync(dto.Email);
+            if (user == null || !(await userManager.CheckPasswordAsync(user, dto.Password)))
                 return BadRequest("Username or password is incorrect");
 
             var jwtToken = GenerateJwtToken(user);
             var refreshToken = GenerateRefreshToken();
 
-            // Store refresh token
             user.RefreshTokens.Add(refreshToken);
-            _context.Update(user);
-            await _context.SaveChangesAsync();
+            userRepository.Update(user);
+            await userRepository.SaveChangesAsync();
 
             SetRefreshTokenCookie(refreshToken);
 
@@ -60,9 +58,7 @@ namespace KPMG_API.Controllers
             if (string.IsNullOrEmpty(refreshToken))
                 return Unauthorized("No refresh token");
 
-            var user = await _context.Users
-                .Include(u => u.RefreshTokens)
-                .SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == refreshToken));
+            var user = await userRepository.GetUserByRefreshTokenAsync(refreshToken);
 
             if (user == null)
                 return Unauthorized("Invalid refresh token");
@@ -78,8 +74,8 @@ namespace KPMG_API.Controllers
             // replace old with new
             user.RefreshTokens.Remove(tokenEntry);
             user.RefreshTokens.Add(newRefresh);
-            _context.Update(user);
-            await _context.SaveChangesAsync();
+            userRepository.Update(user);
+            await userRepository.SaveChangesAsync();
 
             SetRefreshTokenCookie(newRefresh);
 
@@ -93,17 +89,15 @@ namespace KPMG_API.Controllers
             if (string.IsNullOrEmpty(refreshToken))
                 return BadRequest("No token to revoke");
 
-            var user = await _context.Users
-                .Include(u => u.RefreshTokens)
-                .SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == refreshToken));
+            var user = await userRepository.GetUserByRefreshTokenAsync(refreshToken);
 
             if (user == null)
                 return Unauthorized();
 
             var token = user.RefreshTokens.Single(x => x.Token == refreshToken);
             user.RefreshTokens.Remove(token);
-            _context.Update(user);
-            await _context.SaveChangesAsync();
+            userRepository.Update(user);
+            await userRepository.SaveChangesAsync();
 
             Response.Cookies.Delete("refreshToken");
             return Ok();
@@ -111,15 +105,15 @@ namespace KPMG_API.Controllers
 
         private string GenerateJwtToken(ApplicationUser user)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["AppSettings:JWTSecret"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["AppSettings:JWTSecret"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var claims = new[] {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
             var token = new JwtSecurityToken(
-                issuer: _config["AppSettings:Issuer"],
-                audience: _config["AppSettings:Audience"],
+                issuer: config["AppSettings:Issuer"],
+                audience: config["AppSettings:Audience"],
                 claims: claims,
                 expires: DateTime.UtcNow.AddMinutes(10),
                 signingCredentials: creds
@@ -132,7 +126,7 @@ namespace KPMG_API.Controllers
             return new RefreshToken
             {
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddDays(30),
                 Created = DateTime.UtcNow
             };
         }
@@ -144,7 +138,7 @@ namespace KPMG_API.Controllers
                 HttpOnly = true,
                 Expires = refreshToken.Expires,
                 Secure = true,
-                SameSite = SameSiteMode.Strict
+                SameSite = SameSiteMode.None
             };
             Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
         }
