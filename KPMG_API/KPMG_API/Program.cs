@@ -2,6 +2,7 @@ using API.Models.Models;
 using FluentValidation;
 using KPMG_API.DependencyInjection;
 using KPMG_API.Exceptions;
+using Microsoft.AspNetCore.Diagnostics;
 using Serilog;
 
 namespace KPMG_API;
@@ -35,7 +36,21 @@ public class Program
         app.MapGroup("/Identity").MapIdentityApi<ApplicationUser>();
         app.UseAuthorization();
         app.MapControllers();
-
+        if (!app.Environment.IsDevelopment())
+        {
+            // log exceptions to console
+            app.UseExceptionHandler(errorApp =>
+            {
+                errorApp.Run(async ctx =>
+                {
+                    var ex = ctx.Features.Get<IExceptionHandlerFeature>()?.Error;
+                    var msg = ex?.ToString() ?? "Unknown error";
+                    Console.Error.WriteLine(msg);
+                    ctx.Response.StatusCode = 500;
+                    await ctx.Response.WriteAsync(msg);
+                });
+            });
+        }
         app.Run();
     }
 }
