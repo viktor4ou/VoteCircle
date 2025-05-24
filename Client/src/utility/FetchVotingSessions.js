@@ -1,4 +1,3 @@
-// src/api/sessions.js
 import api from "./axios";
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -14,7 +13,6 @@ export const getAllSessions = async () => {
             Accept: "application/json",
             ...getAuthHeader(),
         },
-        withCredentials: true, // if you need cookies
     });
     return response.data;
 };
@@ -33,11 +31,9 @@ export const createVotingSession = async (obj) => {
                 "Content-Type": "application/json",
                 ...getAuthHeader(),
             },
-            withCredentials: true,
         }
     );
 
-    // mirror your shape: attach ok/status
     const data = response.data;
     data.ok = response.status >= 200 && response.status < 300;
     data.status = response.status;
@@ -52,7 +48,6 @@ export const deleteVotingSession = async (id) => {
                 Accept: "application/json",
                 ...getAuthHeader(),
             },
-            withCredentials: true,
         }
     );
 

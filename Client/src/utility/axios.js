@@ -1,15 +1,12 @@
 import axios from "axios";
 
-// Base URL from environment
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
-// Create axios instance
 const api = axios.create({
     baseURL: baseUrl,
     withCredentials: true, // always send cookies
 });
 
-// ---- Auth Helpers ----
 function getToken() {
     return localStorage.getItem("token");
 }
@@ -18,7 +15,6 @@ function setToken(token) {
     localStorage.setItem("token", token);
 }
 
-// ---- Request Interceptor: attach the token ----
 api.interceptors.request.use((config) => {
     const token = getToken();
     if (token) {
@@ -30,7 +26,7 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-// ---- Refresh Logic State ----
+// Refresh Logic State
 let isRefreshing = false;
 let refreshSubscribers = [];
 
@@ -43,7 +39,7 @@ function onRefreshed(token) {
     refreshSubscribers = [];
 }
 
-// ---- Response Interceptor: handle 401s ----
+// Response Interceptor: handle 401s
 api.interceptors.response.use(
     (response) => response,
     (error) => {
@@ -56,7 +52,6 @@ api.interceptors.response.use(
             if (!isRefreshing) {
                 isRefreshing = true;
 
-                // Call refresh endpoint
                 return api
                     .post("/Authentication/Refresh")
                     .then((res) => {
