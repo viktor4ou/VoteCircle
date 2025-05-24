@@ -18,7 +18,7 @@ const Header = () => {
             <div className="drop-shadow-xl sm:justify-center md:absolute md:left-1/2 md:transform md:-translate-x-1/2">
                 <Link to="/">
                     <span className="text-4xl font-bold  text-[#42db7b] drop-shadow-xl">
-                        Voting
+                        VoteCicle
                         <span className="text-4xl font-bold text-[#263642] drop-shadow-xl">
                             {" "}
                             App
