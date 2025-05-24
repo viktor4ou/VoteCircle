@@ -49,7 +49,6 @@ export function AuthProvider({ children }) {
 
                 return login(email, password);
             } catch (error) {
-                console.log(error.response.data.errors);
                 if (error.response.data.errors.PasswordRequiresDigit) {
                     toast.error(
                         error.response.data.errors.PasswordRequiresDigit

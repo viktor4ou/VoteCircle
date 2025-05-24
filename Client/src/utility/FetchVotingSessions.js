@@ -52,12 +52,10 @@ export const deleteVotingSession = async (id) => {
                 },
             }
         );
-        console.log(response);
 
         return { isSuccessful: true, message: response.data.message };
     } catch (error) {
         toast.error(error.response.data.title);
-
         return { isSuccessful: false };
     }
 };

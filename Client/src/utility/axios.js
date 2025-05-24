@@ -95,7 +95,6 @@ api.interceptors.response.use(
 
         // 3) If it's a 401 *after* we already retried once (i.e. refresh gave us a token but the retry still 401)
         if (response?.status === 401 && originalRequest._retry) {
-            console.log("test");
             window.dispatchEvent(new Event("unauthorized"));
         }
 
