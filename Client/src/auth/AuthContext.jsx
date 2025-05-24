@@ -41,9 +41,38 @@ export function AuthProvider({ children }) {
     const register = useCallback(
         async (email, password) => {
             // Register new user then log them in
-            await api.post("/Identity/register", { email, password });
+            try {
+                const response = await api.post("/Identity/register", {
+                    email,
+                    password,
+                });
 
-            return login(email, password);
+                return login(email, password);
+            } catch (error) {
+                console.log(error.response.data.errors);
+                if (error.response.data.errors.PasswordRequiresDigit) {
+                    toast.error(
+                        error.response.data.errors.PasswordRequiresDigit
+                    );
+                }
+                if (
+                    error.response.data.errors.PasswordRequiresNonAlphanumeric
+                ) {
+                    toast.error(
+                        error.response.data.errors
+                            .PasswordRequiresNonAlphanumeric
+                    );
+                }
+                if (error.response.data.errors.PasswordRequiresUpper) {
+                    toast.error(
+                        error.response.data.errors.PasswordRequiresUpper
+                    );
+                }
+                if (error.response.data.errors.PasswordTooShort) {
+                    toast.error(error.response.data.errors.PasswordTooShort);
+                }
+                return { isSuccessful: false };
+            }
         },
         [login]
     );

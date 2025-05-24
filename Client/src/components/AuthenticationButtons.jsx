@@ -46,8 +46,10 @@ export const AuthenticationButtons = () => {
         e.preventDefault();
 
         const response = await register(email, password);
-        setOpen(false);
-        clearFormData();
+        if (response.isSuccessful) {
+            setOpen(false);
+            clearFormData();
+        }
     }
 
     function onEmailChange(e) {
