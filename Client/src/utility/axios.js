@@ -1,5 +1,6 @@
 import axios from "axios";
 
+import { toast } from "sonner";
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const api = axios.create({
@@ -45,7 +46,16 @@ api.interceptors.response.use(
     (error) => {
         const { response, config: originalRequest } = error;
 
-        // If 401 and not already retried
+        // 1) If it's a 401 on the refresh endpoint itself → fire unauthorized
+        if (
+            response?.status === 401 &&
+            originalRequest.url?.endsWith("/Authentication/Refresh")
+        ) {
+            toast.error(error.response.data);
+            return Promise.reject(error);
+        }
+
+        // 2) If it's a 401 and we haven't tried a refresh yet
         if (response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
 
@@ -58,23 +68,35 @@ api.interceptors.response.use(
                         const newToken = res.data.token;
                         setToken(newToken);
                         onRefreshed(newToken);
-                        // Retry original request with new token
                         originalRequest.headers.Authorization = `Bearer ${newToken}`;
                         return api(originalRequest);
                     })
-                    .catch((err) => Promise.reject(err))
+                    .catch((err) => {
+                        // if refresh fails for any reason (including 401), fire unauthorized
+                        if (err.response?.status === 401) {
+                            window.dispatchEvent(new Event("unauthorized"));
+                            toast.error("Unauthorized, please sign in!");
+                        }
+                        return Promise.reject(err);
+                    })
                     .finally(() => {
                         isRefreshing = false;
                     });
             }
 
-            // Queue the request until token is refreshed
-            return new Promise((resolve) => {
+            // queue up other requests until refresh is done
+            return new Promise((resolve) =>
                 subscribeTokenRefresh((token) => {
                     originalRequest.headers.Authorization = `Bearer ${token}`;
                     resolve(api(originalRequest));
-                });
-            });
+                })
+            );
+        }
+
+        // 3) If it's a 401 *after* we already retried once (i.e. refresh gave us a token but the retry still 401)
+        if (response?.status === 401 && originalRequest._retry) {
+            console.log("test");
+            window.dispatchEvent(new Event("unauthorized"));
         }
 
         return Promise.reject(error);

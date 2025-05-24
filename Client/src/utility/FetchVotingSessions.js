@@ -1,7 +1,7 @@
+import { toast } from "sonner";
 import api from "./axios";
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
-// Helper to get fresh token each time
 function getAuthHeader() {
     const token = localStorage.getItem("token");
     return token ? { Authorization: `Bearer ${token}` } : {};
@@ -18,41 +18,46 @@ export const getAllSessions = async () => {
 };
 
 export const createVotingSession = async (obj) => {
-    const response = await api.post(
-        `${baseUrl}/VotingSessions/CreateVotingSession`,
-        {
-            title: obj.title,
-            description: obj.description,
-            scheduledUntil: obj.scheduledUntil,
-        },
-        {
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                ...getAuthHeader(),
+    try {
+        const response = await api.post(
+            `${baseUrl}/VotingSessions/CreateVotingSession`,
+            {
+                title: obj.title,
+                description: obj.description,
+                scheduledUntil: obj.scheduledUntil,
             },
-        }
-    );
-
-    const data = response.data;
-    data.ok = response.status >= 200 && response.status < 300;
-    data.status = response.status;
-    return data;
+            {
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    ...getAuthHeader(),
+                },
+            }
+        );
+        return { isSuccessful: true, message: response.data.message };
+    } catch (error) {
+        toast.error(error.response.data.errors.Title);
+        return { isSuccessful: false };
+    }
 };
 
 export const deleteVotingSession = async (id) => {
-    const response = await api.delete(
-        `${baseUrl}/VotingSessions/DeleteVotingSession/${id}`,
-        {
-            headers: {
-                Accept: "application/json",
-                ...getAuthHeader(),
-            },
-        }
-    );
+    try {
+        const response = await api.delete(
+            `${baseUrl}/VotingSessions/DeleteVotingSession/${id}`,
+            {
+                headers: {
+                    Accept: "application/json",
+                    ...getAuthHeader(),
+                },
+            }
+        );
+        console.log(response);
 
-    const data = response.data;
-    data.ok = response.status >= 200 && response.status < 300;
-    data.status = response.status;
-    return data;
+        return { isSuccessful: true, message: response.data.message };
+    } catch (error) {
+        toast.error(error.response.data.title);
+
+        return { isSuccessful: false };
+    }
 };

@@ -27,25 +27,29 @@ const CreateSession = ({ getSessions }) => {
 
     async function onFormSubmit(e) {
         e.preventDefault();
-        const scheduledUntil = date.toISOString();
-
-        const obj = { title, description, scheduledUntil };
-        const result = await createVotingSession(obj);
-        if (!result.ok) {
-            toast.error(result.title, {
-                description: result.detail,
-            });
+        if (!date) {
+            toast.error("Scheduled until is required!");
         } else {
-            toast.success(result.message);
+            const scheduledUntil = date.toISOString();
+            const obj = { title, description, scheduledUntil };
+            const response = await createVotingSession(obj);
+            if (response.isSuccessful) {
+                toast.success(response.message);
+                setOpen(false);
+                clearFormData();
+            }
+            await getSessions();
         }
-
-        setOpen(false);
-        await getSessions();
+    }
+    function handleOpenForm() {
+        setOpen(true);
+        clearFormData();
+    }
+    function clearFormData() {
         setTitle("");
         setdescription("");
         setDate("");
     }
-
     function titleOnChange(e) {
         setTitle(e.target.value);
     }
@@ -58,7 +62,7 @@ const CreateSession = ({ getSessions }) => {
             <Button
                 variant="outline"
                 className="absolute left-1/2 transform -translate-x-1/2 flex mt-1 items-center gap-1 bg-[#01ff95] text-263642  cursor-pointer hover:bg-[#4199FF] hover:text-amber-50 drop-shadow-xl"
-                onClick={() => setOpen(true)} // Opens modal on click
+                onClick={() => handleOpenForm()} // Opens modal on click
             >
                 Create Session
                 <CirclePlus />
@@ -87,6 +91,7 @@ const CreateSession = ({ getSessions }) => {
                                     name="title"
                                     value={title}
                                     onChange={titleOnChange}
+                                    required
                                 />
                             </label>
 
@@ -134,6 +139,7 @@ const CreateSession = ({ getSessions }) => {
                                             onSelect={setDate}
                                             disabled={{ before: new Date() }}
                                             initialFocus
+                                            required
                                         />
                                     </PopoverContent>
                                 </Popover>

@@ -19,22 +19,19 @@ const CreateEntity = ({ fetchData, sessionId }) => {
     async function onFormSubmit(e) {
         e.preventDefault();
         const obj = { title, percentageWeight, sessionId };
-        const result = await createEntity(obj);
+        const response = await createEntity(obj);
 
-        if (!result.ok) {
-            toast.error(result.title, {
-                description: result.detail,
-            });
-        } else {
-            toast.success(result.message);
+        if (response.isSuccessful) {
+            toast.success(response.message);
+            setOpen(false);
+            clearFormData();
         }
-
-        setOpen(false);
         await fetchData();
+    }
+    function clearFormData() {
         setTitle("");
         setPercentageWeight("");
     }
-
     function titleOnChange(e) {
         setTitle(e.target.value);
     }
@@ -76,6 +73,7 @@ const CreateEntity = ({ fetchData, sessionId }) => {
                                     name="title"
                                     value={title}
                                     onChange={titleOnChange}
+                                    required
                                 />
                             </label>
 
@@ -90,6 +88,7 @@ const CreateEntity = ({ fetchData, sessionId }) => {
                                     name="percentageWeight"
                                     value={percentageWeight ?? ""}
                                     onChange={percentageWeightOnChange}
+                                    required
                                 />
                             </label>
 

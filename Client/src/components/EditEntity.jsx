@@ -27,16 +27,11 @@ export const EditEntity = ({
         e.preventDefault();
         const obj = { id, title, percentageWeight };
         const response = await editEntity(obj);
-        if (!response.ok) {
-            toast.error(response.title, {
-                description: response.detail,
-            });
-        } else {
+        if (response.isSuccessful) {
             toast.success(response.message);
+            setOpen(false);
         }
-
         await fetchData();
-        setOpen(false);
     }
     function titleOnChange(e) {
         setTitle(e.target.value);

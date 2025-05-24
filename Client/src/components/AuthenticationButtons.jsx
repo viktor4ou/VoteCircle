@@ -29,20 +29,23 @@ export const AuthenticationButtons = () => {
     const handleOpen = (selectedOption) => {
         setOption(selectedOption);
         setOpen(true);
+        clearFormData();
     };
 
     async function signInOnSubmit(e) {
         e.preventDefault();
-        const response = await login(email, password); //add error handling
-        setOpen(false);
-        clearFormData();
+        const response = await login(email, password);
+        //Closes the form and clear the data , when request is successful
+        if (response) {
+            setOpen(false);
+            clearFormData();
+        }
     }
 
     async function signUpOnSubmit(e) {
         e.preventDefault();
 
-        const response = await register(email, password); //add error handling
-
+        const response = await register(email, password);
         setOpen(false);
         clearFormData();
     }
@@ -63,7 +66,7 @@ export const AuthenticationButtons = () => {
     async function onConfirmPasswordChange(e) {
         setConfirmPassword(e.target.value);
 
-        if (password == e.target.value) {
+        if (password === e.target.value) {
             setPasswordMatchError("");
         } else {
             setPasswordMatchError("Passwords doesn't match");
@@ -126,18 +129,19 @@ export const AuthenticationButtons = () => {
                                 </CardHeader>
                                 <CardContent className="space-y-2">
                                     <form onSubmit={(e) => signInOnSubmit(e)}>
-                                        <div className="space-y-1">
+                                        <div className="space-y-2">
                                             <Label htmlFor="email-signin">
                                                 Email
                                             </Label>
                                             <Input
                                                 onChange={onEmailChange}
                                                 type="email"
+                                                className="my-2"
                                                 value={email}
                                                 placeholder="example@example.com"
                                             />
                                         </div>
-                                        <div className="space-y-1">
+                                        <div className="space-y-2">
                                             <Label htmlFor="password-signin">
                                                 Password
                                             </Label>
@@ -145,6 +149,7 @@ export const AuthenticationButtons = () => {
                                                 value={password}
                                                 onChange={onPasswordChange}
                                                 type="password"
+                                                className="my-2"
                                                 placeholder="Your password"
                                             />
                                         </div>
@@ -168,34 +173,38 @@ export const AuthenticationButtons = () => {
                                 </CardHeader>
                                 <CardContent className="space-y-2">
                                     <form onSubmit={signUpOnSubmit}>
-                                        <div className="space-y-1">
+                                        <div className="space-y-2">
                                             <Label htmlFor="email-signup">
                                                 Email
                                             </Label>
                                             <Input
                                                 type="email"
                                                 value={email}
+                                                className="my-2"
                                                 onChange={onEmailChange}
                                                 placeholder="example@example.com"
                                             />
                                         </div>
-                                        <div className="space-y-1">
+                                        <div className="space-y-2">
                                             <Label htmlFor="password-signup">
                                                 Password
                                             </Label>
                                             <Input
                                                 type="password"
+                                                className="my-2"
                                                 value={password}
                                                 onChange={onPasswordChange}
                                                 placeholder="Password"
+                                                required
                                             />
                                         </div>
-                                        <div className="space-y-1">
+                                        <div className="space-y-2">
                                             <Label htmlFor="confirmpassword-signup">
                                                 Confirm Password
                                             </Label>
                                             <Input
                                                 type="password"
+                                                className="my-2"
                                                 value={confirmPassword}
                                                 onChange={
                                                     onConfirmPasswordChange

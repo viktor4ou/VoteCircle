@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import api from "@/utility/axios";
 import { jwtDecode } from "jwt-decode";
+import { toast } from "sonner";
 const AuthContext = createContext();
 export default AuthContext;
 
@@ -19,21 +20,29 @@ export function AuthProvider({ children }) {
     );
 
     const login = useCallback(async (email, password) => {
-        const res = await api.post("/Authentication/SignIn", {
-            email,
-            password,
-        });
-        const token = res.data.token;
-        localStorage.setItem("token", token);
-        setAccessToken(token);
-        setUser(jwtDecode(token).sub);
-        return res.data;
+        try {
+            const res = await api.post("/Authentication/SignIn", {
+                email,
+                password,
+            });
+            if (res.status === 200) {
+                const token = res.data.token;
+                localStorage.setItem("token", token);
+                setAccessToken(token);
+                setUser(jwtDecode(token).sub);
+                toast.success("Successfully logged in!");
+            }
+            return res.data;
+        } catch (error) {
+            toast.error(error.response.data);
+        }
     }, []);
 
     const register = useCallback(
         async (email, password) => {
             // Register new user then log them in
             await api.post("/Identity/register", { email, password });
+
             return login(email, password);
         },
         [login]
@@ -41,7 +50,10 @@ export function AuthProvider({ children }) {
 
     const logout = useCallback(async () => {
         try {
-            await api.post("/Authentication/Revoke");
+            const response = await api.post("/Authentication/Revoke");
+            if (response.status === 200) {
+                toast.success("Successfully logged out!");
+            }
         } finally {
             localStorage.removeItem("token");
             setAccessToken(null);

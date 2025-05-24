@@ -43,15 +43,10 @@ const Entity = ({ title, percentageWeight, id, fetchData, setVoteResult }) => {
     async function deleteOnClick() {
         const response = await deleteEntity(id);
 
-        if (!response.ok) {
-            toast.error(response.title, {
-                description: response.detail,
-            });
-        } else {
+        if (response.isSuccessful) {
             toast.success(response.message);
+            await fetchData();
         }
-
-        await fetchData();
     }
 
     return (

@@ -1,7 +1,7 @@
+import { toast } from "sonner";
 import api from "./axios";
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
-// helper to read token on each call
 function getAuthHeader() {
     const token = localStorage.getItem("token");
     return token ? { Authorization: `Bearer ${token}` } : {};
@@ -21,61 +21,78 @@ export const getAllEntitesBySessionId = async (id) => {
 };
 
 export const createEntity = async (formValues) => {
-    const response = await api.post(
-        `${baseUrl}/Entites/CreateEntity`,
-        {
-            title: formValues.title,
-            percentageWeight: formValues.percentageWeight,
-            sessionId: formValues.sessionId,
-        },
-        {
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                ...getAuthHeader(),
+    try {
+        const response = await api.post(
+            `${baseUrl}/Entites/CreateEntity`,
+            {
+                title: formValues.title,
+                percentageWeight: formValues.percentageWeight,
+                sessionId: formValues.sessionId,
             },
-        }
-    );
+            {
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    ...getAuthHeader(),
+                },
+            }
+        );
 
-    const data = response.data;
-    data.ok = response.status >= 200 && response.status < 300;
-    data.status = response.status;
-    return data;
+        return { isSuccessful: true, message: response.data.message };
+    } catch (error) {
+        if (error.response.data.errors.Title) {
+            toast.error(error.response.data.errors.Title);
+        }
+        if (error.response.data.errors.PercentageWeight) {
+            toast.error(error.response.data.errors.PercentageWeight);
+        }
+        return { isSuccessful: false };
+    }
 };
 
 export const deleteEntity = async (id) => {
-    const response = await api.delete(`${baseUrl}/Entites/DeleteEntity/${id}`, {
-        headers: {
-            Accept: "application/json",
-            ...getAuthHeader(),
-        },
-    });
-
-    const data = response.data;
-    data.ok = response.status >= 200 && response.status < 300;
-    data.status = response.status;
-    return data;
+    try {
+        const response = await api.delete(
+            `${baseUrl}/Entites/DeleteEntity/${id}`,
+            {
+                headers: {
+                    Accept: "application/json",
+                    ...getAuthHeader(),
+                },
+            }
+        );
+        return { isSuccessful: true, message: response.data.message };
+    } catch (error) {
+        toast.error(error.response.data.title);
+        return { isSuccessful: false };
+    }
 };
 
 export const editEntity = async (newObj) => {
-    const response = await api.patch(
-        `${baseUrl}/Entites/EditEntity`,
-        {
-            id: newObj.id,
-            title: newObj.title,
-            percentageWeight: newObj.percentageWeight,
-        },
-        {
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                ...getAuthHeader(),
+    try {
+        const response = await api.patch(
+            `${baseUrl}/Entites/EditEntity`,
+            {
+                id: newObj.id,
+                title: newObj.title,
+                percentageWeight: newObj.percentageWeight,
             },
+            {
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    ...getAuthHeader(),
+                },
+            }
+        );
+        return { isSuccessful: true, message: response.data.message };
+    } catch (error) {
+        if (error.response.data.errors.Title) {
+            toast.error(error.response.data.errors.Title);
         }
-    );
-
-    const data = response.data;
-    data.ok = response.status >= 200 && response.status < 300;
-    data.status = response.status;
-    return data;
+        if (error.response.data.errors.PercentageWeight) {
+            toast.error(error.response.data.errors.PercentageWeight);
+        }
+        return { isSuccessful: false };
+    }
 };
