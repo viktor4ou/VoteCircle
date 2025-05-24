@@ -17,24 +17,28 @@ const ActivePoll = () => {
     }, []);
 
     return (
-        <div className="bg-[#FAFAFAFA] flex flex-col ">
-            <div className="flex my-5 mx-10 xl:mx-80 sm:mx-20 justify-between drop-shadow-xl">
-                <h1 className="font-bold text-4xl text-[#42db7b] drop-shadow-xl">
+        <div className="bg-[#FAFAFA] flex flex-col px-4 py-6 sm:px-8 lg:px-32 space-y-6">
+            <div className="grid grid-cols-3 items-center mb-4">
+                <h1 className="col-start-1 text-left font-bold text-2xl md:text-4xl text-[#42db7b]">
                     Presence
                 </h1>
-                <div className="mt-7 max-sm:hidden">
-                    <CreateEntity fetchData={fetchData} sessionId={id} />
+                <div className="col-start-2 flex justify-center">
+                    <CreateEntity
+                        fetchData={fetchData}
+                        sessionId={id}
+                        className="w-full max-w-xs md:w-auto"
+                    />
                 </div>
-                <h1 className="font-bold text-4xl text-[#263642] drop-shadow-xl">
+                <h1 className="col-start-3 text-right font-bold text-2xl md:text-4xl text-[#263642]">
                     Vote
                 </h1>
             </div>
 
-            <div className="mx-10 xl:mx-80 sm:mx-20 my-5">
+            <div className="w-full">
                 <VoteProgress value={Math.abs(voteResult)} />
             </div>
 
-            <div className="mx-10 xl:mx-80 sm:mx-20 h-[600px] overflow-y-auto">
+            <div className="h-[600px] overflow-y-auto space-y-4">
                 {entities.map((entity) => (
                     <Entity
                         key={entity.id}
