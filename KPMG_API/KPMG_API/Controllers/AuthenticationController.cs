@@ -56,16 +56,16 @@ namespace KPMG_API.Controllers
         {
             var refreshToken = Request.Cookies["refreshToken"];
             if (string.IsNullOrEmpty(refreshToken))
-                return Unauthorized("No refresh token");
+                return Unauthorized("No refresh token. Please sign in!");
 
             var user = await userRepository.GetUserByRefreshTokenAsync(refreshToken);
 
             if (user == null)
-                return Unauthorized("Invalid refresh token");
+                return Unauthorized("Invalid refresh token. Please sign in again!");
 
             var tokenEntry = user.RefreshTokens.Single(x => x.Token == refreshToken);
             if (tokenEntry.Expires < DateTime.UtcNow)
-                return Unauthorized("Refresh token expired");
+                return Unauthorized("Refresh token expired. Please sign in again!");
 
             // generate new tokens
             var newJwt = GenerateJwtToken(user);

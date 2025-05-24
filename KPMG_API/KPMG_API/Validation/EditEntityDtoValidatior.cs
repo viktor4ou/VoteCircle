@@ -13,8 +13,8 @@ namespace KPMG_API.Validation
 
             RuleFor(x => x.Title)
                 .NotEmpty().WithMessage("Title is required!")
-                .MinimumLength(3).WithMessage("Minimum length is 3 characters!")
-                .MaximumLength(100).WithMessage("Maximum length is 100 characters!");
+                .MinimumLength(3).WithMessage("Minimum length of the title is 3 characters!")
+                .MaximumLength(100).WithMessage("Maximum length of the title is 100 characters!");
 
             RuleFor(x => x.PercentageWeight)
                 .NotEmpty().WithMessage("Percentage weight is required")
