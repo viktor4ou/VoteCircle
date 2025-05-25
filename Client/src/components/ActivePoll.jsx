@@ -19,7 +19,7 @@ const ActivePoll = () => {
     return (
         <div className="bg-[#FAFAFA] flex flex-col px-4 py-6 sm:px-8 lg:px-32 space-y-6">
             <div className="grid grid-cols-3 items-center mb-4">
-                <h1 className="col-start-1 text-left font-bold text-2xl md:text-4xl text-[#42db7b]">
+                <h1 className="col-start-1 text-left font-bold text-xl sm:text-4xl text-[#42db7b]">
                     Presence
                 </h1>
                 <div className="col-start-2 flex justify-center">
@@ -29,7 +29,7 @@ const ActivePoll = () => {
                         className="w-full max-w-xs md:w-auto"
                     />
                 </div>
-                <h1 className="col-start-3 text-right font-bold text-2xl md:text-4xl text-[#263642]">
+                <h1 className="col-start-3 text-right font-bold text-2xl sm:text-4xl text-[#263642]">
                     Vote
                 </h1>
             </div>

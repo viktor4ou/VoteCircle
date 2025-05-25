@@ -51,7 +51,7 @@ export const Session = ({
                     <CardDescription>{description}</CardDescription>
                 </div>
                 {user ? (
-                    <div className="hidden group-hover:flex ">
+                    <div className="flex sm:hidden sm:group-hover:flex">
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
                                 <Button variant="outline">

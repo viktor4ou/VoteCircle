@@ -65,14 +65,22 @@ const Entity = ({ title, percentageWeight, id, fetchData, setVoteResult }) => {
 
                     {/* Center column: Text (always centered) with icons positioned to its right on hover */}
                     <div className="flex-grow flex justify-center">
-                        <div className="relative inline-flex items-center">
+                        <div className="relative inline-flex items-center group">
+                            {/* 1) Mobile-only edit button, sits just left of the title */}
+                            <div className="flex sm:hidden mr-2">
+                                <EditEntity
+                                    id={id}
+                                    oldPercentageWeight={percentageWeight}
+                                    oldTitle={title}
+                                    fetchData={fetchData}
+                                />
+                            </div>
                             {/* Text container */}
                             <div className="text-center">
                                 <div className="text-xl font-bold">{title}</div>
                                 <div>{percentageWeight.toFixed(2)}%</div>
                             </div>
-                            {/* Icons container - absolutely positioned to the right of the text container */}
-                            <div className="absolute left-full top-0 hidden group-hover:flex items-center space-x-1">
+                            <div className="flex sm:hidden items-center ml-2">
                                 <AlertDialog>
                                     <AlertDialogTrigger asChild>
                                         <Button
@@ -86,7 +94,45 @@ const Entity = ({ title, percentageWeight, id, fetchData, setVoteResult }) => {
                                         <AlertDialogHeader>
                                             <AlertDialogTitle>
                                                 Are you sure you want to delete
-                                                this session?
+                                                this entitiy?
+                                            </AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This action cannot be undone.
+                                                This will permanently delete the
+                                                session and remove all entities
+                                                !
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel className="bg-red-400 text-white">
+                                                Cancel
+                                            </AlertDialogCancel>
+                                            <AlertDialogAction
+                                                onClick={deleteOnClick}
+                                                className="bg-green-500"
+                                            >
+                                                Continue
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            </div>
+                            {/* Icons container - absolutely positioned to the right of the text container */}
+                            <div className="hidden sm:absolute sm:left-full sm:top-0 sm:group-hover:flex items-center space-x-1 ml-3">
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            className="ml-3"
+                                        >
+                                            <Trash2 className="mb-1" />
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>
+                                                Are you sure you want to delete
+                                                this entitiy?
                                             </AlertDialogTitle>
                                             <AlertDialogDescription>
                                                 This action cannot be undone.
