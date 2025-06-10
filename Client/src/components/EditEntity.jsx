@@ -66,7 +66,7 @@ export const EditEntity = ({
                                     Title
                                 </span>
                                 <input
-                                    className="border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring focus:border-blue-300"
+                                    className="border border-input bg-background text-foreground rounded px-2 py-1 focus:outline-none focus:ring focus:border-ring"
                                     placeholder={title}
                                     name="title"
                                     value={title}
@@ -79,7 +79,7 @@ export const EditEntity = ({
                                     Percentage Weight
                                 </span>
                                 <input
-                                    className="border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring focus:border-blue-300"
+                                    className="border border-input bg-background text-foreground rounded px-2 py-1 focus:outline-none focus:ring focus:border-ring"
                                     name="percentageWeight"
                                     placeholder={percentageWeight}
                                     value={percentageWeight}
@@ -91,7 +91,7 @@ export const EditEntity = ({
                                 <Button
                                     variant="outline"
                                     onClick={() => setOpen(false)}
-                                    className=" bg-red-400 text-amber-50"
+                                    className="bg-red-400 text-amber-50"
                                     type="button"
                                 >
                                     Cancel
@@ -100,7 +100,7 @@ export const EditEntity = ({
                                 <Button
                                     type="submit"
                                     variant="outline"
-                                    className=" bg-[#42db7b] text-amber-50"
+                                    className="bg-[#42db7b] text-amber-50"
                                 >
                                     Edit
                                 </Button>

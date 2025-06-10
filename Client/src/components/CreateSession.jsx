@@ -61,8 +61,8 @@ const CreateSession = ({ getSessions }) => {
         <div className="flex items-center justify-center">
             <Button
                 variant="outline"
-                className="absolute left-1/2 transform -translate-x-1/2 flex mt-1 items-center gap-1 bg-[#01ff95] text-263642  cursor-pointer hover:bg-[#4199FF] hover:text-amber-50 drop-shadow-xl"
-                onClick={() => handleOpenForm()} // Opens modal on click
+                className="absolute left-1/2 transform -translate-x-1/2 flex mt-1 items-center gap-1 bg-[#01ff95] text-[#263642] hover:bg-[#4199FF] hover:text-amber-50 drop-shadow-xl"
+                onClick={() => handleOpenForm()}
             >
                 Create Session
                 <CirclePlus />
@@ -86,7 +86,7 @@ const CreateSession = ({ getSessions }) => {
                                     Title
                                 </span>
                                 <input
-                                    className="border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring focus:border-blue-300"
+                                    className="border border-input bg-background text-foreground rounded px-2 py-1 focus:outline-none focus:ring focus:border-ring"
                                     placeholder="New water pipe"
                                     name="title"
                                     value={title}
@@ -100,7 +100,7 @@ const CreateSession = ({ getSessions }) => {
                                     Description
                                 </span>
                                 <input
-                                    className="border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring focus:border-blue-300"
+                                    className="border border-input bg-background text-foreground rounded px-2 py-1 focus:outline-none focus:ring focus:border-ring"
                                     placeholder="We need new water pipe, because our is old!"
                                     type="text"
                                     name="description"
@@ -148,7 +148,7 @@ const CreateSession = ({ getSessions }) => {
                                 <Button
                                     variant="outline"
                                     onClick={() => setOpen(false)}
-                                    className=" bg-red-400 text-amber-50"
+                                    className="bg-red-400 text-amber-50"
                                     type="button"
                                 >
                                     Cancel
@@ -157,7 +157,7 @@ const CreateSession = ({ getSessions }) => {
                                 <Button
                                     type="submit"
                                     variant="outline"
-                                    className=" bg-[#42db7b] text-amber-50"
+                                    className="bg-[#42db7b] text-amber-50"
                                 >
                                     Create
                                 </Button>

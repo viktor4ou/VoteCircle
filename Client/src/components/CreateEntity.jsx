@@ -43,8 +43,8 @@ const CreateEntity = ({ fetchData, sessionId }) => {
         <div className="flex items-center justify-center">
             <Button
                 variant="outline"
-                className="absolute left-1/2 transform -translate-x-1/2 flex mt-1 items-center gap-1 bg-[#01ff95] text-263642  cursor-pointer hover:bg-[#4199FF] hover:text-amber-50 drop-shadow-xl"
-                onClick={() => setOpen(true)} // Opens modal on click
+                className="absolute left-1/2 transform -translate-x-1/2 flex mt-1 items-center gap-1 bg-[#01ff95] text-[#263642] hover:bg-[#4199FF] hover:text-amber-50 drop-shadow-xl"
+                onClick={() => setOpen(true)}
             >
                 Create Entity
                 <CirclePlus />
@@ -68,7 +68,7 @@ const CreateEntity = ({ fetchData, sessionId }) => {
                                     Title
                                 </span>
                                 <input
-                                    className="border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring focus:border-blue-300"
+                                    className="border border-input bg-background text-foreground rounded px-2 py-1 focus:outline-none focus:ring focus:border-ring"
                                     placeholder="Apartment 1"
                                     name="title"
                                     value={title}
@@ -82,7 +82,7 @@ const CreateEntity = ({ fetchData, sessionId }) => {
                                     Percentage Weight
                                 </span>
                                 <input
-                                    className="border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring focus:border-blue-300"
+                                    className="border border-input bg-background text-foreground rounded px-2 py-1 focus:outline-none focus:ring focus:border-ring"
                                     placeholder="5"
                                     type="number"
                                     name="percentageWeight"
@@ -96,7 +96,7 @@ const CreateEntity = ({ fetchData, sessionId }) => {
                                 <Button
                                     variant="outline"
                                     onClick={() => setOpen(false)}
-                                    className=" bg-red-400 text-amber-50"
+                                    className="bg-red-400 text-amber-50"
                                     type="button"
                                 >
                                     Cancel
@@ -105,7 +105,7 @@ const CreateEntity = ({ fetchData, sessionId }) => {
                                 <Button
                                     type="submit"
                                     variant="outline"
-                                    className=" bg-[#42db7b] text-amber-50"
+                                    className="bg-[#42db7b] text-amber-50"
                                 >
                                     Create
                                 </Button>

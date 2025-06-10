@@ -10,8 +10,8 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "./ui/button";
 import { AuthenticationButtons } from "./AuthenticationButtons";
+
 export const HamburgerMenu = () => {
-    const [themeSwitchStatus, setThemeSwitchStatus] = useState(false);
     const [sheetOpen, setSheetOpen] = useState(false);
     return (
         <Sheet>
