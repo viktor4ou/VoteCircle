@@ -31,15 +31,32 @@ namespace KPMG_API.Controllers
             this.config = config;
             this.userRepository = userRepository;
         }
+        [HttpPost("SignUp")]
+        public async Task<IActionResult> SignUp(AuthenticationDTO dto) // Add automapper later
+        {
+            var user = new ApplicationUser
+            {
+                UserName = dto.Email,
+                Email = dto.Email
+            };
+            var result = await userManager.CreateAsync(user, dto.Password);
+            if (!result.Succeeded)
+            {
+                var errors = result.Errors.Select(e => e.Description); // Add problem details later
+                return BadRequest(new { Errors = errors });
+            }
+            await userManager.AddToRoleAsync(user, "User");
+            return Ok("User created successfully");
+        }
 
         [HttpPost("SignIn")]
-        public async Task<IActionResult> SignIn([FromBody] SignInDTO dto)
+        public async Task<IActionResult> SignIn([FromBody] AuthenticationDTO dto)
         {
             var user = await userManager.FindByEmailAsync(dto.Email);
 
             if (user == null || !(await userManager.CheckPasswordAsync(user, dto.Password)))
                 return BadRequest("Username or password is incorrect");
-            await userManager.AddToRoleAsync(user, "Admin");
+            await userManager.AddToRoleAsync(user, "User");
 
             var jwtToken = await GenerateJwtTokenAsync(user);
             var refreshToken = GenerateRefreshToken();
@@ -112,9 +129,10 @@ namespace KPMG_API.Controllers
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
-            claims.AddRange(roles.Select(r => new Claim("role", r)));
+            claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["AppSettings:JWTSecret"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -126,7 +144,7 @@ namespace KPMG_API.Controllers
                 expires: DateTime.UtcNow.AddMinutes(10),
                 signingCredentials: creds
             );
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return new JwtSecurityTokenHandler().WriteToken(token); 
         }
 
         private RefreshToken GenerateRefreshToken()
