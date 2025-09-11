@@ -159,3 +159,6 @@ Client/.env.production
 Client/.env.development
 Client/*.tar
 KPMG_API/*.tar
+/Client/.env
+/KPMG_API/KPMG_API/appsettings.json
+/KPMG_API/appsettings.json
