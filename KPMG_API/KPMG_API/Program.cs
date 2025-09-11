@@ -1,10 +1,6 @@
-using API.Data.Data;
-using API.Models.Models;
 using FluentValidation;
 using KPMG_API.DependencyInjection;
 using KPMG_API.Exceptions;
-using KPMG_API.Infrastructure;
-using Microsoft.AspNetCore.Identity;
 using Serilog;
 
 namespace KPMG_API;

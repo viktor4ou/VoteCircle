@@ -17,11 +17,19 @@ import { Trash2 } from "lucide-react";
 import { deleteEntity } from "../utility/FetchEntities";
 import { EditEntity } from "./EditEntity";
 import { toast } from "sonner";
+import useAuth from "@/CustomHooks/useAuth";
 
-const Entity = ({ title, percentageWeight, id, fetchData, setVoteResult }) => {
+const Entity = ({
+    title,
+    percentageWeight,
+    id,
+    ownerId,
+    fetchData,
+    setVoteResult,
+}) => {
+    const { user } = useAuth();
     const [presenceToggle, setPresenceToggle] = useState(false);
     const [voteToggle, setVoteToggle] = useState(false);
-    const [error, setError] = useState(false);
 
     const handlePresenceToggle = (checked) => {
         setPresenceToggle(checked);
@@ -118,49 +126,55 @@ const Entity = ({ title, percentageWeight, id, fetchData, setVoteResult }) => {
                                 </AlertDialog>
                             </div>
                             {/* Icons container - absolutely positioned to the right of the text container */}
-                            <div className="hidden sm:absolute sm:left-full sm:top-0 sm:group-hover:flex items-center space-x-1 ml-3">
-                                <AlertDialog>
-                                    <AlertDialogTrigger asChild>
-                                        <Button
-                                            variant="outline"
-                                            className="ml-3"
-                                        >
-                                            <Trash2 className="mb-1" />
-                                        </Button>
-                                    </AlertDialogTrigger>
-                                    <AlertDialogContent>
-                                        <AlertDialogHeader>
-                                            <AlertDialogTitle>
-                                                Are you sure you want to delete
-                                                this entitiy?
-                                            </AlertDialogTitle>
-                                            <AlertDialogDescription>
-                                                This action cannot be undone.
-                                                This will permanently delete the
-                                                session and remove all entities
-                                                !
-                                            </AlertDialogDescription>
-                                        </AlertDialogHeader>
-                                        <AlertDialogFooter>
-                                            <AlertDialogCancel className="bg-red-400 text-white">
-                                                Cancel
-                                            </AlertDialogCancel>
-                                            <AlertDialogAction
-                                                onClick={deleteOnClick}
-                                                className="bg-green-500"
+                            {user.roles.includes("Admin") ||
+                            user.id === ownerId ? (
+                                <div className="hidden sm:absolute sm:left-full sm:top-0 sm:group-hover:flex items-center space-x-1 ml-3">
+                                    <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                            <Button
+                                                variant="outline"
+                                                className="ml-3"
                                             >
-                                                Continue
-                                            </AlertDialogAction>
-                                        </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                </AlertDialog>
-                                <EditEntity
-                                    id={id}
-                                    oldPercentageWeight={percentageWeight}
-                                    oldTitle={title}
-                                    fetchData={fetchData}
-                                />
-                            </div>
+                                                <Trash2 className="mb-1" />
+                                            </Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>
+                                                    Are you sure you want to
+                                                    delete this entitiy?
+                                                </AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    This action cannot be
+                                                    undone. This will
+                                                    permanently delete the
+                                                    session and remove all
+                                                    entities !
+                                                </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel className="bg-red-400 text-white">
+                                                    Cancel
+                                                </AlertDialogCancel>
+                                                <AlertDialogAction
+                                                    onClick={deleteOnClick}
+                                                    className="bg-green-500"
+                                                >
+                                                    Continue
+                                                </AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
+                                    <EditEntity
+                                        id={id}
+                                        oldPercentageWeight={percentageWeight}
+                                        oldTitle={title}
+                                        fetchData={fetchData}
+                                    />
+                                </div>
+                            ) : (
+                                <></>
+                            )}
                         </div>
                     </div>
 

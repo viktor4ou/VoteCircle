@@ -4,6 +4,7 @@ using API.Models.Models;
 using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
@@ -11,20 +12,22 @@ namespace KPMG_API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize]
-    public class EntitesController : ControllerBase
+    [Authorize(Policy = "UserOnly")]
+    public class EntitesController : ControllerBase // I that there is a typo ;)
     {
         private readonly IEntityRepository entityRepository;
         private readonly IValidator<CreateEntityDTO> createEntityValidator;
         private readonly IValidator<EditEntityDTO> editEntityValidator;
         private readonly IValidator<int> idValidator;
         private readonly IMapper mapper;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public EntitesController(IEntityRepository entityRepository,
             IValidator<CreateEntityDTO> createEntityValidator,
             IValidator<EditEntityDTO> editEntityValidator,
             IValidator<int> idValidator,
-            IMapper mapper)
+            IMapper mapper,
+            UserManager<ApplicationUser> userManager)
 
         {
             this.entityRepository = entityRepository;
@@ -32,10 +35,10 @@ namespace KPMG_API.Controllers
             this.editEntityValidator = editEntityValidator;
             this.idValidator = idValidator;
             this.mapper = mapper;
+            this.userManager = userManager;
         }
 
         [HttpGet("GetAllEntitesBySessionId")]
-        [Authorize]
         public async Task<IActionResult> GetAllEntitesBySessionId(int sessionId)
         {
             var validationResult = idValidator.Validate(sessionId);
@@ -67,7 +70,9 @@ namespace KPMG_API.Controllers
                 return BadRequest(validationProblemDetails);
 
             }
-            Entity entitiy = mapper.Map<Entity>(DTO);
+            var currentUser = await userManager.GetUserAsync(User);
+            Entity entitiy = mapper.Map<Entity>(DTO,
+                opt => opt.Items["UserId"] = currentUser!.Id);
 
             await entityRepository.AddAsync(entitiy);
             await entityRepository.SaveChangesAsync();
@@ -94,8 +99,8 @@ namespace KPMG_API.Controllers
                 Log.Error("Validation Error {@validationProblemDetails}", validationProblemDetails);
                 return BadRequest(validationProblemDetails);
             }
-
             Entity entity = await entityRepository.GetByIdAsync(editDTO.Id);
+
             if (entity is null)
             {
                 ProblemDetails problemDetails = new()
@@ -112,6 +117,14 @@ namespace KPMG_API.Controllers
                 return BadRequest(problemDetails);
 
             }
+
+            var currentUser = await userManager.GetUserAsync(User);
+            var currentUserRoles = await userManager.GetRolesAsync(currentUser!);
+            if (entity.OwnerId != currentUser!.Id && !currentUserRoles.Contains("Admin"))
+            {
+                return Unauthorized("You are not the owner of this entity");
+            }
+
             Entity newEntity = mapper.Map(editDTO, entity);
             entityRepository.Update(newEntity);
             await entityRepository.SaveChangesAsync();
@@ -147,7 +160,12 @@ namespace KPMG_API.Controllers
 
                 return BadRequest(problemDetails);
             }
-
+            var currentUser = await userManager.GetUserAsync(User);
+            var currentUserRoles = await userManager.GetRolesAsync(currentUser!);
+            if (entity.OwnerId != currentUser!.Id && !currentUserRoles.Contains("Admin"))
+            {
+                return Unauthorized("You are not the owner of this entity");
+            }
             entityRepository.Delete(entity);
             await entityRepository.SaveChangesAsync();
             Log.Information("Successfully deleted entity {@entity}", entity);

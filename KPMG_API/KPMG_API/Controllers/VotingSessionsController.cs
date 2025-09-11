@@ -6,9 +6,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualBasic;
 using Serilog;
-using System.Runtime.InteropServices;
 
 namespace KPMG_API.Controllers
 {
@@ -68,9 +66,9 @@ namespace KPMG_API.Controllers
             }
             var currentUser = await signInManager.UserManager.GetUserAsync(User);
 
-            VotingSession session = mapper.Map<VotingSession>(dto, 
+            VotingSession session = mapper.Map<VotingSession>(dto,
                 opt => opt.Items["UserId"] = currentUser!.Id);
-            
+
             await sessionRepository.AddAsync(session);
             await sessionRepository.SaveChangesAsync();
             Log.Information("Successfully created session with {@session}", session);
@@ -90,7 +88,7 @@ namespace KPMG_API.Controllers
 
             var currentUser = await userManager.GetUserAsync(User);
             var currentUserRoles = await userManager.GetRolesAsync(currentUser!);
-            if ((currentUser!.Id != searchedSession.OwnerId) && !currentUserRoles.Contains("Admin"))  
+            if ((currentUser!.Id != searchedSession.OwnerId) && !currentUserRoles.Contains("Admin"))
             {
                 return Unauthorized("You are not the owner of this session");
             }
