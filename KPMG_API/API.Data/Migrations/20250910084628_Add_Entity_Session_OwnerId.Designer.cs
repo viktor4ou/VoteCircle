@@ -3,6 +3,7 @@ using System;
 using API.Data.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250910084628_Add_Entity_Session_OwnerId")]
+    partial class Add_Entity_Session_OwnerId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,9 +97,8 @@ namespace API.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("OwnerId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uuid");
 
                     b.Property<decimal>("PercentageWeight")
                         .HasColumnType("decimal(18,2)");
@@ -118,7 +120,7 @@ namespace API.Data.Migrations
                         new
                         {
                             Id = 1,
-                            OwnerId = "a9da4fe1-3005-4148-a69c-e1f61b89a86e",
+                            OwnerId = new Guid("a9da4fe1-3005-4148-a69c-e1f61b89a86e"),
                             PercentageWeight = 5.2m,
                             Title = "Change roof",
                             VotingSessionId = 1
@@ -126,7 +128,7 @@ namespace API.Data.Migrations
                         new
                         {
                             Id = 2,
-                            OwnerId = "a9da4fe1-3005-4148-a69c-e1f61b89a86e",
+                            OwnerId = new Guid("a9da4fe1-3005-4148-a69c-e1f61b89a86e"),
                             PercentageWeight = 3.6m,
                             Title = "New water pipe",
                             VotingSessionId = 1
@@ -179,9 +181,8 @@ namespace API.Data.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("OwnerId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uuid");
 
                     b.Property<decimal>("Result")
                         .HasColumnType("numeric");
@@ -204,7 +205,7 @@ namespace API.Data.Migrations
                             CreatedOn = new DateTime(2025, 3, 24, 21, 33, 37, 0, DateTimeKind.Utc),
                             Description = "We need to change the water pipe",
                             IsActive = false,
-                            OwnerId = "a9da4fe1-3005-4148-a69c-e1f61b89a86e",
+                            OwnerId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Result = 0m,
                             ScheduledUntil = new DateTime(2025, 3, 24, 21, 33, 37, 0, DateTimeKind.Utc),
                             Title = "New water pipe"

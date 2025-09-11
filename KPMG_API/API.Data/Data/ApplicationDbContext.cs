@@ -36,8 +36,8 @@ namespace API.Data.Data
             // Seed Entities
             modelBuilder.Entity<Entity>()
                 .HasData(
-                    new Entity(1, "Change roof", 5.2m, 1),
-                    new Entity(2, "New water pipe", 3.6m, 1)
+                    new Entity(1, "a9da4fe1-3005-4148-a69c-e1f61b89a86e", "Change roof", 5.2m, 1),
+                    new Entity(2, "a9da4fe1-3005-4148-a69c-e1f61b89a86e", "New water pipe", 3.6m, 1)
                 );
 
             // Use a static DateTime instead of DateTime.UtcNow
@@ -46,8 +46,8 @@ namespace API.Data.Data
             // Seed VotingSession
             modelBuilder.Entity<VotingSession>()
                 .HasData(
-                    new VotingSession(1, "New water pipe", "We need to change the water pipe", staticDate, staticDate)
-                );
+                    new VotingSession(1, "a9da4fe1-3005-4148-a69c-e1f61b89a86e", "New water pipe", "We need to change the water pipe", staticDate, staticDate)
+                );  
         }
 
     }

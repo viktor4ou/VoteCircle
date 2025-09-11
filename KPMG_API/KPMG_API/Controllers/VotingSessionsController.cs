@@ -4,30 +4,39 @@ using API.Models.Models;
 using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 using Serilog;
+using System.Runtime.InteropServices;
 
 namespace KPMG_API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize]
+    [Authorize(Policy = "UserOnly")]
     public class VotingSessionsController : ControllerBase
     {
         private readonly IVotingSessionRepository sessionRepository;
         private readonly IValidator<CreateVotingSessionDTO> createVotingSessionValidator;
         private readonly IValidator<int> idValidator;
         private readonly IMapper mapper;
+        private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public VotingSessionsController(IVotingSessionRepository sessionRepository,
             IValidator<CreateVotingSessionDTO> createVotingSessionValidator,
             IValidator<int> idValidator,
-            IMapper mapper)
+            IMapper mapper,
+            SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUser> userManager)
         {
             this.sessionRepository = sessionRepository;
             this.createVotingSessionValidator = createVotingSessionValidator;
             this.idValidator = idValidator;
             this.mapper = mapper;
+            this.signInManager = signInManager;
+            this.userManager = userManager;
         }
 
         [HttpGet("GetAllSessions")]
@@ -57,9 +66,11 @@ namespace KPMG_API.Controllers
                 Log.Error("Validation error {@validationProblemDetails}", validationProblemDetails);
                 return BadRequest(validationProblemDetails);
             }
+            var currentUser = await signInManager.UserManager.GetUserAsync(User);
 
-            VotingSession session = mapper.Map<VotingSession>(dto);
-
+            VotingSession session = mapper.Map<VotingSession>(dto, 
+                opt => opt.Items["UserId"] = currentUser!.Id);
+            
             await sessionRepository.AddAsync(session);
             await sessionRepository.SaveChangesAsync();
             Log.Information("Successfully created session with {@session}", session);
@@ -77,6 +88,12 @@ namespace KPMG_API.Controllers
 
             var searchedSession = await sessionRepository.GetSessionById(id);
 
+            var currentUser = await userManager.GetUserAsync(User);
+            var currentUserRoles = await userManager.GetRolesAsync(currentUser!);
+            if ((currentUser!.Id != searchedSession.OwnerId) && !currentUserRoles.Contains("Admin"))  
+            {
+                return Unauthorized("You are not the owner of this session");
+            }
             if (searchedSession == null)
             {
                 ProblemDetails problemDetails = new()

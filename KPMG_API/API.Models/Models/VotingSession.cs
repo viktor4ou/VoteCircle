@@ -14,25 +14,27 @@ namespace API.Models.Models
         {
             
         }
-        public VotingSession(int id, string title, string description, DateTime scheduledUntil,DateTime createdOn)
+        public VotingSession(int id, string ownerId, string title, string description, DateTime scheduledUntil, DateTime createdOn)
         {
             Id = id;
+            OwnerId = ownerId;
             Title = title;
             Description = description;
             ScheduledUntil = scheduledUntil;
             CreatedOn = createdOn;
         }
-        public VotingSession(string title, DateTime scheduledUntil, DateTime createdOn)
+        public VotingSession(string title, string ownerId, DateTime scheduledUntil, DateTime createdOn)
         {
             Title = title;
+            OwnerId = ownerId;
             ScheduledUntil = scheduledUntil;
             CreatedOn = createdOn;
-            
         }
 
-        public VotingSession(string title, string? description, DateTime scheduledUntil, DateTime createdOn, decimal result, bool isActive)
+        public VotingSession(string title, string ownerId, string? description, DateTime scheduledUntil, DateTime createdOn, decimal result, bool isActive)
         {
             Title = title;
+            OwnerId = ownerId;
             Description = description;
             ScheduledUntil = scheduledUntil;
             CreatedOn = createdOn;
@@ -42,6 +44,7 @@ namespace API.Models.Models
 
         [Key]
         public int Id { get; set; }
+        public string OwnerId { get; set; }
         public string Title { get; set; }
         public string? Description { get; set; }
         public DateTime ScheduledUntil { get; set; }
