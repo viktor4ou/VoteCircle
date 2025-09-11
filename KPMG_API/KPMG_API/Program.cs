@@ -36,21 +36,7 @@ public class Program
         app.MapGroup("/Identity").MapIdentityApi<ApplicationUser>();
         app.UseAuthorization();
         app.MapControllers();
-        if (!app.Environment.IsDevelopment())
-        {
-            // log exceptions to console
-            app.UseExceptionHandler(errorApp =>
-            {
-                errorApp.Run(async ctx =>
-                {
-                    var ex = ctx.Features.Get<IExceptionHandlerFeature>()?.Error;
-                    var msg = ex?.ToString() ?? "Unknown error";
-                    Console.Error.WriteLine(msg);
-                    ctx.Response.StatusCode = 500;
-                    await ctx.Response.WriteAsync(msg);
-                });
-            });
-        }
+        
         app.Run();
     }
 }

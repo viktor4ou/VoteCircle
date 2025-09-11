@@ -36,10 +36,12 @@ namespace KPMG_API.Controllers
         public async Task<IActionResult> SignIn([FromBody] SignInDTO dto)
         {
             var user = await userManager.FindByEmailAsync(dto.Email);
+
             if (user == null || !(await userManager.CheckPasswordAsync(user, dto.Password)))
                 return BadRequest("Username or password is incorrect");
+            await userManager.AddToRoleAsync(user, "Admin");
 
-            var jwtToken = GenerateJwtToken(user);
+            var jwtToken = await GenerateJwtTokenAsync(user);
             var refreshToken = GenerateRefreshToken();
 
             user.RefreshTokens.Add(refreshToken);
@@ -68,7 +70,7 @@ namespace KPMG_API.Controllers
                 return Unauthorized("Refresh token expired. Please sign in again!");
 
             // generate new tokens
-            var newJwt = GenerateJwtToken(user);
+            var newJwt = await GenerateJwtTokenAsync(user);
             var newRefresh = GenerateRefreshToken();
 
             // replace old with new
@@ -103,14 +105,20 @@ namespace KPMG_API.Controllers
             return Ok();
         }
 
-        private string GenerateJwtToken(ApplicationUser user)
+        private async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["AppSettings:JWTSecret"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var claims = new[] {
+            var roles = await userManager.GetRolesAsync(user);
+
+            var claims = new List<Claim>
+            {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
+            claims.AddRange(roles.Select(r => new Claim("role", r)));
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["AppSettings:JWTSecret"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            
             var token = new JwtSecurityToken(
                 issuer: config["AppSettings:Issuer"],
                 audience: config["AppSettings:Audience"],

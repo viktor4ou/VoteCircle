@@ -9,9 +9,9 @@ namespace KPMG_API.DependencyInjection
     {
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            services.AddTransient<IEntityRepository, EntityRepository>();
-            services.AddTransient<IVotingSessionRepository, VotingSessionRepository>();
-            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddScoped<IEntityRepository, EntityRepository>();
+            services.AddScoped<IVotingSessionRepository, VotingSessionRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddIdentityApiEndpoints<ApplicationUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             return services;
