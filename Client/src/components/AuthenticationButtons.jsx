@@ -108,6 +108,12 @@ export const AuthenticationButtons = () => {
                         >
                             Logout
                         </Button>
+
+                        {user?.roles?.includes("Admin") && (
+                            <Button className="bg-[#4199FF] drop-shadow-xl me-5 hover:bg-[#357dd0]">
+                                Admin
+                            </Button>
+                        )}
                     </div>
                 )}
             </div>

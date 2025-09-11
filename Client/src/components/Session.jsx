@@ -28,6 +28,7 @@ import useAuth from "@/CustomHooks/useAuth";
 export const Session = ({
     id,
     title,
+    ownerId,
     description,
     result,
     scheduledUntil,
@@ -50,7 +51,7 @@ export const Session = ({
                     <CardTitle className="truncate">{title}</CardTitle>
                     <CardDescription>{description}</CardDescription>
                 </div>
-                {user ? (
+                {user && user.sub === ownerId ? (
                     <div className="flex sm:hidden sm:group-hover:flex">
                         <AlertDialog>
                             <AlertDialogTrigger asChild>

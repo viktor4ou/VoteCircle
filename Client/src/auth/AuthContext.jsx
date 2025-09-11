@@ -16,9 +16,19 @@ export function AuthProvider({ children }) {
         localStorage.getItem("token")
     );
     const [user, setUser] = useState(() =>
-        accessToken ? jwtDecode(accessToken).sub : null
+        {
+            if (accessToken) {
+                let decode = jwtDecode(accessToken);
+                let roles = decode["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+                return {id:decode.sub, roles:roles}            
+            }
+            else{
+               return null;
+            }
+        }
+        
     );
-
+    
     const login = useCallback(async (email, password) => {
         try {
             const res = await api.post("/Authentication/SignIn", {
@@ -29,7 +39,9 @@ export function AuthProvider({ children }) {
                 const token = res.data.token;
                 localStorage.setItem("token", token);
                 setAccessToken(token);
-                setUser(jwtDecode(token).sub);
+                let decode = jwtDecode(token)
+                let roles = decode["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+                setUser({id:decode.sub, roles: roles});
                 toast.success("Successfully logged in!");
             }
             return res.data;
@@ -42,7 +54,7 @@ export function AuthProvider({ children }) {
         async (email, password) => {
             // Register new user then log them in
             try {
-                const response = await api.post("/Identity/register", {
+                const response = await api.post("/Authentication/SignUp", {
                     email,
                     password,
                 });
