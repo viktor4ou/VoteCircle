@@ -1,14 +1,21 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 
 namespace KPMG_API.DependencyInjection
 {
-    public static class AuthenticationExtentions
+    public static class AuthenticationExtensions
     {
         public static IServiceCollection AddJWTAuthentication(this IServiceCollection services, IConfiguration config)
         {
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
             .AddJwtBearer(y =>
             {
                 y.SaveToken = false;
@@ -20,6 +27,13 @@ namespace KPMG_API.DependencyInjection
                     ValidateAudience = false,
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero,
+                    RoleClaimType = ClaimTypes.Role,
+                    NameClaimType = ClaimTypes.NameIdentifier
+                };
+                y.Events = new JwtBearerEvents
+                {
+                    OnChallenge = ctx => { ctx.HandleResponse(); ctx.Response.StatusCode = 401; return Task.CompletedTask; },
+                    OnForbidden = ctx => { ctx.Response.StatusCode = 403; return Task.CompletedTask; }
                 };
             });
 

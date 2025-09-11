@@ -12,8 +12,6 @@ namespace KPMG_API.DependencyInjection
             services.AddScoped<IEntityRepository, EntityRepository>();
             services.AddScoped<IVotingSessionRepository, VotingSessionRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddIdentityApiEndpoints<ApplicationUser>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
             return services;
         }
 

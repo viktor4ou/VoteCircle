@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using API.Data.Data;
+using API.Models.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace KPMG_API.DependencyInjection
 {
@@ -12,6 +14,13 @@ namespace KPMG_API.DependencyInjection
                 options.Lockout.MaxFailedAccessAttempts = int.MaxValue;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.Zero;
             });
+            return services;
+        }
+
+        public static IServiceCollection AddIdentity(this IServiceCollection services)
+        {
+            services.AddIdentity<ApplicationUser, IdentityRole>() // move into extension method later
+            .AddEntityFrameworkStores<ApplicationDbContext>();
             return services;
         }
     }
