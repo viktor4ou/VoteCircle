@@ -1,12 +1,11 @@
 ﻿using API.Data.Data;
 using API.Data.Interfaces;
-using API.Models.Models;
 using Microsoft.EntityFrameworkCore;
 
 
 namespace API.Data.Repository
 {
-    
+
     public abstract class Repository<T> : IRepository<T> where T : class
     {
         private ApplicationDbContext db;
@@ -16,9 +15,9 @@ namespace API.Data.Repository
             this.db = db;
             set = db.Set<T>();
         }
-        public async Task AddAsync(T entity)
+        public void Add(T entity)
         {
-            await set.AddAsync(entity);
+            set.Add(entity);
         }
 
         public void Delete(T entity)
@@ -39,6 +38,6 @@ namespace API.Data.Repository
         {
             return await set.ToListAsync();
         }
-        
+
     }
 }

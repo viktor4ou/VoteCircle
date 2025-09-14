@@ -1,3 +1,4 @@
+using API.Data.Constants;
 using API.Data.Interfaces;
 using API.Models.DTOs.Enitity;
 using API.Models.Models;
@@ -74,7 +75,7 @@ namespace KPMG_API.Controllers
             Entity entitiy = mapper.Map<Entity>(DTO,
                 opt => opt.Items["UserId"] = currentUser!.Id);
 
-            await entityRepository.AddAsync(entitiy);
+            entityRepository.Add(entitiy);
             await entityRepository.SaveChangesAsync();
             Log.Information("Successfully created entity {@entitiy}", entitiy);
             return Ok(new { message = "Entity was created successfully!" });
@@ -120,7 +121,7 @@ namespace KPMG_API.Controllers
 
             var currentUser = await userManager.GetUserAsync(User);
             var currentUserRoles = await userManager.GetRolesAsync(currentUser!);
-            if (entity.OwnerId != currentUser!.Id && !currentUserRoles.Contains("Admin"))
+            if (entity.OwnerId != currentUser!.Id && !currentUserRoles.Contains(UserRole.Admin))
             {
                 return Unauthorized("You are not the owner of this entity");
             }
@@ -162,7 +163,7 @@ namespace KPMG_API.Controllers
             }
             var currentUser = await userManager.GetUserAsync(User);
             var currentUserRoles = await userManager.GetRolesAsync(currentUser!);
-            if (entity.OwnerId != currentUser!.Id && !currentUserRoles.Contains("Admin"))
+            if (entity.OwnerId != currentUser!.Id && !currentUserRoles.Contains(UserRole.Admin))
             {
                 return Unauthorized("You are not the owner of this entity");
             }

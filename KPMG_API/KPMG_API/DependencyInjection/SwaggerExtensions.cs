@@ -1,4 +1,5 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using API.Data.Constants;
+using Microsoft.OpenApi.Models;
 
 namespace KPMG_API.DependencyInjection
 {
@@ -36,7 +37,7 @@ namespace KPMG_API.DependencyInjection
         }
         public static WebApplication ConfigureSwaggerExporer(this WebApplication app)
         {
-            app.MapSwagger().RequireAuthorization("Admin");
+            app.MapSwagger().RequireAuthorization(UserRole.Admin);
             app.UseSwagger();
             app.UseSwaggerUI();
             return app;

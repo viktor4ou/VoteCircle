@@ -1,4 +1,5 @@
-﻿using API.Data.Interfaces;
+﻿using API.Data.Constants;
+using API.Data.Interfaces;
 using API.Models.DTOs.VotingSession;
 using API.Models.Models;
 using AutoMapper;
@@ -69,7 +70,7 @@ namespace KPMG_API.Controllers
             VotingSession session = mapper.Map<VotingSession>(dto,
                 opt => opt.Items["UserId"] = currentUser!.Id);
 
-            await sessionRepository.AddAsync(session);
+            sessionRepository.Add(session);
             await sessionRepository.SaveChangesAsync();
             Log.Information("Successfully created session with {@session}", session);
             return Ok(new { message = "Voting session was created successfully!" });
@@ -88,7 +89,7 @@ namespace KPMG_API.Controllers
 
             var currentUser = await userManager.GetUserAsync(User);
             var currentUserRoles = await userManager.GetRolesAsync(currentUser!);
-            if ((currentUser!.Id != searchedSession.OwnerId) && !currentUserRoles.Contains("Admin"))
+            if ((currentUser!.Id != searchedSession.OwnerId) && !currentUserRoles.Contains(UserRole.Admin))
             {
                 return Unauthorized("You are not the owner of this session");
             }

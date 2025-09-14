@@ -1,4 +1,5 @@
-﻿using API.Data.Interfaces;
+﻿using API.Data.Constants;
+using API.Data.Interfaces;
 using API.Models.DTOs.Authentication;
 using API.Models.Models;
 using Microsoft.AspNetCore.Identity;
@@ -45,7 +46,7 @@ namespace KPMG_API.Controllers
                 var errors = result.Errors.Select(e => e.Description); // Add problem details later
                 return BadRequest(new { Errors = errors });
             }
-            await userManager.AddToRoleAsync(user, "User");
+            await userManager.AddToRoleAsync(user, UserRole.User);
             return Ok("User created successfully");
         }
 
@@ -56,7 +57,7 @@ namespace KPMG_API.Controllers
 
             if (user == null || !(await userManager.CheckPasswordAsync(user, dto.Password)))
                 return BadRequest("Username or password is incorrect");
-            await userManager.AddToRoleAsync(user, "User");
+            await userManager.AddToRoleAsync(user, UserRole.User);
 
             var jwtToken = await GenerateJwtTokenAsync(user);
             var refreshToken = GenerateRefreshToken();
@@ -136,7 +137,7 @@ namespace KPMG_API.Controllers
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["AppSettings:JWTSecret"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            
+
             var token = new JwtSecurityToken(
                 issuer: config["AppSettings:Issuer"],
                 audience: config["AppSettings:Audience"],
@@ -144,7 +145,7 @@ namespace KPMG_API.Controllers
                 expires: DateTime.UtcNow.AddMinutes(10),
                 signingCredentials: creds
             );
-            return new JwtSecurityTokenHandler().WriteToken(token); 
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         private RefreshToken GenerateRefreshToken()

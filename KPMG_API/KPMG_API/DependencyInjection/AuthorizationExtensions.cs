@@ -1,4 +1,6 @@
-﻿namespace KPMG_API.DependencyInjection
+﻿using API.Data.Constants;
+
+namespace KPMG_API.DependencyInjection
 {
     public static class AuthorizationExtensions
     {
@@ -6,8 +8,8 @@
         {
             services.AddAuthorization(o =>
             {
-                o.AddPolicy("AdminOnly", p => p.RequireRole("Admin"));
-                o.AddPolicy("UserOnly", p => p.RequireRole("User"));
+                o.AddPolicy("AdminOnly", p => p.RequireRole(UserRole.Admin));
+                o.AddPolicy("UserOnly", p => p.RequireRole(UserRole.User));
             });
             return services;
         }
